@@ -32,4 +32,20 @@ export class GifService {
     })
   }
 
+  //crear metodo llamado searchGif y reciba el query
+  searchGif(query:string) {
+    this.http.get<GiphyResponse>(`${ environment.giphyApiUrl }/gifs/search`, {
+      params:{
+        api_key: environment.giphyApiKey,
+        q:query,
+        limit:10
+      }
+    }).subscribe( (resp) => {
+      const gifs = GifMapper.mapGiphyItemsToGifArray(resp.data);
+      console.log(gifs);
+    })
+  }
+
+
+
 }
