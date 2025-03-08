@@ -4,7 +4,7 @@ import { environment } from '@enviroments/environment';
 import type { GiphyResponse } from '../interfaces/giphy.interfaces';
 import type { Gif } from '../interfaces/gif.interface';
 import { GifMapper } from '../mapper/gif.mapper';
-import { map, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 
 // {
 //   'Goku': [gif1,gif2,gif3],
@@ -45,7 +45,7 @@ export class GifService {
   }
 
   //crear metodo llamado searchGif y reciba el query
-  searchGif(query:string) {
+  searchGif(query:string) : Observable<Gif[]> {
     return this.http.get<GiphyResponse>(`${ environment.giphyApiUrl }/gifs/search`, {
       params:{
         api_key: environment.giphyApiKey,
@@ -56,11 +56,15 @@ export class GifService {
       map(({data}) => data),
       map((items) => GifMapper.mapGiphyItemsToGifArray(items)),
 
-      //TODO: Historial
+      //Historial
       tap( (gifs) => {
         this.searchHistory.update((history) => ({
           ...history, [query.toLowerCase()]:gifs}))
       })
     )
+  }
+
+  getHistoryGifs( query: string ) : Gif[] {
+    return this.searchHistory()[query] ?? [];
   }
 }
