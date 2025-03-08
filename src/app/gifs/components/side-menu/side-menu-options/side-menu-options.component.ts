@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { GifService } from 'src/app/gifs/services/gifs.services';
 
 interface MenuOption {
   label: string;
@@ -15,6 +16,7 @@ interface MenuOption {
 })
 
 export class SideMenuOptionsComponent {
+  gifsService = inject(GifService);
 
   menuOptions:MenuOption[] = [
     {
@@ -30,5 +32,4 @@ export class SideMenuOptionsComponent {
       icon: 'fa-solid fa-magnifying-glass'
     }
   ]
-
 }
